@@ -70,7 +70,7 @@ PSCP='/usr/bin/parallel-scp -t 0 -O StrictHostKeyChecking=no '
 #echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu" \
 #    "trusty-updates/juno main" > /etc/apt/sources.list.d/cloudarchive-juno.list
 
-#sudo add-apt-repository ppa:ubuntu-cloud-archive/juno-staging 
+#sudo add-apt-repository ppa:ubuntu-cloud-archive/juno-staging
 
 #
 # Setup mail to users
@@ -95,7 +95,7 @@ if [ $OSVERSION -ge $OSKILO ]; then
 fi
 
 #
-# This is a nasty bug in oslo_service; see 
+# This is a nasty bug in oslo_service; see
 # https://review.openstack.org/#/c/256267/
 #
 if [ $OSVERSION -ge $OSKILO -a $OSVERSION -lt $OSNEWTON ]; then
@@ -115,7 +115,7 @@ if [ -z "${DB_ROOT_PASS}" ]; then
     sleep 8
     DB_ROOT_PASS=`$PSWDGEN`
     # This does what mysql_secure_installation does on Ubuntu
-    echo "use mysql; update user set password=PASSWORD(\"${DB_ROOT_PASS}\") where User='root'; delete from user where User=''; delete from user where User='root' and Host not in ('localhost', '127.0.0.1', '::1'); drop database test; delete from db where Db='test' or Db='test\\_%'; flush privileges;" | mysql -u root 
+    echo "use mysql; update user set password=PASSWORD(\"${DB_ROOT_PASS}\") where User='root'; delete from user where User=''; delete from user where User='root' and Host not in ('localhost', '127.0.0.1', '::1'); drop database test; delete from db where Db='test' or Db='test\\_%'; flush privileges;" | mysql -u root
     # Shutdown our unprotected server
     mysqladmin --password=${DB_ROOT_PASS} shutdown
     # Put it on the management network and set recommended settings
@@ -507,7 +507,7 @@ EOF
             # Try the EOL version...
             wget -O /var/www/cgi-bin/keystone/admin "http://git.openstack.org/cgit/openstack/keystone/plain/httpd/keystone.py?h=${OSCODENAME}-eol"
 	fi
-	cp -p /var/www/cgi-bin/keystone/admin /var/www/cgi-bin/keystone/main 
+	cp -p /var/www/cgi-bin/keystone/admin /var/www/cgi-bin/keystone/main
 	chown -R keystone:keystone /var/www/cgi-bin/keystone
 	chmod 755 /var/www/cgi-bin/keystone/*
     elif [ $OSVERSION -ge $OSLIBERTY -a $KEYSTONEUSEWSGI -eq 1 \
@@ -1140,7 +1140,7 @@ if [ -z "${NOVA_DBPASS}" ]; then
     if [ $OSVERSION -ge $OSOCATA ]; then
 	maybe_install_packages nova-placement-api
     fi
-    
+
     if [ ${ENABLE_NEW_SERIAL_SUPPORT} = 1 ]; then
 	maybe_install_packages nova-serialproxy
 	mkdir -p $OURDIR/src
@@ -2324,7 +2324,7 @@ if [ $OSVERSION -ge $OSMITAKA -a -z "${MANILA_DBPASS}" ]; then
 	    share internal http://${CONTROLLER}:8786/v1/%\(tenant_id\)s
 	__openstack endpoint create --region $REGION \
 	    share admin http://${CONTROLLER}:8786/v1/%\(tenant_id\)s
-	
+
 	__openstack endpoint create --region $REGION \
 	    sharev2 public http://${CONTROLLER}:8786/v2/%\(tenant_id\)s
 	__openstack endpoint create --region $REGION \
@@ -3007,7 +3007,7 @@ if [ -z "${CEILOMETER_DBPASS}" ]; then
 	service_enable mongodb
 
 	MDONE=1
-	while [ $MDONE -ne 0 ]; do 
+	while [ $MDONE -ne 0 ]; do
 	    sleep 1
 	    mongo --host ${MGMTIP} --eval "db = db.getSiblingDB(\"ceilometer\"); db.addUser({user: \"ceilometer\", pwd: \"${CEILOMETER_DBPASS}\", roles: [ \"readWrite\", \"dbAdmin\" ]})"
 	    MDONE=$?
@@ -3156,7 +3156,7 @@ EOF
 
     if [ $USING_GNOCCHI -eq 0 -a "${CEILOMETER_USE_MONGODB}" = "1" ]; then
 	crudini --set /etc/ceilometer/ceilometer.conf database \
-	    connection "mongodb://ceilometer:${CEILOMETER_DBPASS}@${MGMTIP}:27017/ceilometer" 
+	    connection "mongodb://ceilometer:${CEILOMETER_DBPASS}@${MGMTIP}:27017/ceilometer"
     elif [ $USING_GNOCCHI -eq 0 ]; then
 	crudini --set /etc/ceilometer/ceilometer.conf database \
 	    connection "${DBDSTRING}://ceilometer:${CEILOMETER_DBPASS}@$CONTROLLER/ceilometer?charset=utf8"
@@ -3426,7 +3426,7 @@ EOF
             # Try the EOL version
             wget -O /usr/bin/ceilometer-wsgi-app https://raw.githubusercontent.com/openstack/ceilometer/${OSCODENAME}-eol/ceilometer/api/app.wsgi
 	fi
-	
+
 	service apache2 reload
     #elif [ $OSVERSION -ge $OSOCATA ]; then
     #	a2ensite ceilometer-api.conf
@@ -4212,7 +4212,7 @@ if [ -z "${SAHARA_DBPASS}" ]; then
     else
 	# This may fail because sahara's migration scripts use ALTER TABLE,
         # which sqlite doesn't support
-	maybe_install_packages sahara-common 
+	maybe_install_packages sahara-common
 	aserr=$?
 	maybe_install_packages sahara-api sahara-engine
     fi

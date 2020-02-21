@@ -39,6 +39,8 @@ pc.defineParameter("release","OpenStack Release",
                    longDescription="We provide OpenStack Stein (Ubuntu 18.04, python3), Rocky, Queens (Ubuntu 18.04, python2), Pike, Ocata, Newton, Mitaka (Ubuntu 16.04, python2); Liberty (Ubuntu 15.10, python2); Kilo (Ubuntu 15.04, python2); or Juno (Ubuntu 14.10, python2).  OpenStack is installed from packages available on these distributions.")
 pc.defineParameter("computeNodeCount", "Number of compute nodes (at Site 1)",
                    portal.ParameterType.INTEGER, 1)
+pc.defineParameter("progressEmail", "Who to email when setup is finished",
+                   portal.ParameterType.STRING, "")
 pc.defineParameter("osNodeType", "Hardware Type",
                    portal.ParameterType.NODETYPE, "",
                    longDescription="A specific hardware type to use for each node.  Cloudlab clusters all have machines of specific types.  When you set this field to a value that is a specific hardware type, you will only be able to instantiate this profile on clusters with machines of that type.  If unset, when you instantiate the profile, the resulting experiment may have machines of any available type allocated.")
@@ -318,7 +320,7 @@ params = pc.bindParameters()
 ###    random.shuffle(upperChars)
 ###    random.shuffle(lowerChars)
 ###    random.shuffle(decChars)
-    
+
 ###    passwdList = [nonalphaChars[0],nonalphaChars[1],upperChars[0],upperChars[1],
 ###                  lowerChars[0],lowerChars[1],decChars[0],decChars[1]]
 ###    random.shuffle(passwdList)
@@ -494,7 +496,7 @@ The profile's setup scripts are automatically installed on each node in `/tmp/se
 
 #
 # Setup the Tour info with the above description and instructions.
-#  
+#
 tour = IG.Tour()
 tour.Description(IG.Tour.TEXT,tourDescription)
 tour.Instructions(IG.Tour.MARKDOWN,tourInstructions)
@@ -974,10 +976,10 @@ if params.blockstoreURN != "":
         pc.reportError(perr)
         pc.verifyParameters()
         pass
-    
+
     rbsn = nodes[params.blockstoreMountNode]
     myintf = rbsn.addInterface("ifbs0")
-    
+
     bsnode = IG.RemoteBlockstore("bsnode",params.blockstoreMountPoint)
     bsnode.Site("1")
     if firewalling and setfwdesire:
@@ -986,7 +988,7 @@ if params.blockstoreURN != "":
     bsnode.dataset = params.blockstoreURN
     #bsnode.size = params.N
     bsnode.readonly = params.blockstoreReadOnly
-    
+
     bslink = RSpec.Link("bslink")
     bslink.addInterface(myintf)
     bslink.addInterface(bsintf)
@@ -1070,7 +1072,7 @@ class Parameters(RSpec.Resource):
     def _write(self, root):
         ns = "{http://www.protogeni.net/resources/rspec/ext/johnsond/1}"
         paramXML = "%sparameter" % (ns,)
-        
+
         el = ET.SubElement(root,"%sprofile_parameters" % (ns,))
 
         param = ET.SubElement(el,paramXML)
@@ -1136,37 +1138,37 @@ class Parameters(RSpec.Resource):
 
         param = ET.SubElement(el,paramXML)
         param.text = "ENABLE_NEW_SERIAL_SUPPORT=%d" % (int(params.enableNewSerialSupport))
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "DISABLE_SECURITY_GROUPS=%d" % (int(params.disableSecurityGroups))
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "DEFAULT_SECGROUP_ENABLE_SSH_ICMP=%d" % (int(params.enableInboundSshAndIcmp))
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "USE_NEUTRON_LBAAS=%d" % (int(params.enableNeutronLoadBalancing))
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "CEILOMETER_USE_MONGODB=%d" % (int(params.ceilometerUseMongoDB))
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "VERBOSE_LOGGING=\"%s\"" % (str(bool(params.enableVerboseLogging)))
         param = ET.SubElement(el,paramXML)
         param.text = "DEBUG_LOGGING=\"%s\"" % (str(bool(params.enableDebugLogging)))
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "TOKENTIMEOUT=%d" % (int(params.tokenTimeout))
         param = ET.SubElement(el,paramXML)
         param.text = "SESSIONTIMEOUT=%d" % (int(params.sessionTimeout))
-        
+
         if params.keystoneVersion > 0:
             param = ET.SubElement(el,paramXML)
             param.text = "KEYSTONEAPIVERSION=%d" % (int(params.keystoneVersion))
             pass
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "KEYSTONEUSEMEMCACHE=%d" % (int(bool(params.keystoneUseMemcache)))
-        
+
         if params.keystoneUseWSGI == 0:
             param = ET.SubElement(el,paramXML)
             param.text = "KEYSTONEUSEWSGI=0"
@@ -1175,10 +1177,10 @@ class Parameters(RSpec.Resource):
             param.text = "KEYSTONEUSEWSGI=1"
         else:
             pass
-        
+
         param = ET.SubElement(el,paramXML)
         param.text = "QUOTASOFF=%d" % (int(bool(params.quotasOff)))
-        
+
         if params.ubuntuMirrorHost != "":
             param = ET.SubElement(el,paramXML)
             param.text = "UBUNTUMIRRORHOST=\"%s\"" % (params.ubuntuMirrorHost,)
@@ -1198,6 +1200,9 @@ class Parameters(RSpec.Resource):
 
         param = ET.SubElement(el,paramXML)
         param.text = "OSRELEASE='%s'" % (str(params.release))
+
+        param = ET.SubElement(el,paramXML)
+        param.text = "PROGRESS_EMAIL='%s'" % (str(params.progressEmail))
 
         param = ET.SubElement(el,paramXML)
         param.text = "SWIFT_LV_SIZE=%d" % (int(params.swiftLVSize))

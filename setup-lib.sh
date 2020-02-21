@@ -173,7 +173,7 @@ if [ ! -e $OURDIR/apt-configured ]; then
     touch $OURDIR/apt-configured
 fi
 export DEBIAN_FRONTEND=noninteractive
-# -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" 
+# -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef"
 DPKGOPTS=''
 APTGETINSTALLOPTS='-y'
 APTGETINSTALL="apt-get $DPKGOPTS install $APTGETINSTALLOPTS"
@@ -519,10 +519,14 @@ else
     DBDSTRING="mysql"
 fi
 
-if [ $GENIUSER -eq 1 ]; then
-    SWAPPER_EMAIL=`geni-get slice_email`
+if [ "x$PROGRESS_EMAIL" = "x" ]; then
+    if [ $GENIUSER -eq 1 ]; then
+        SWAPPER_EMAIL=`geni-get slice_email`
+    else
+        SWAPPER_EMAIL="$SWAPPER@$OURDOMAIN"
+    fi
 else
-    SWAPPER_EMAIL="$SWAPPER@$OURDOMAIN"
+    SWAPPER_EMAIL="$PROGRESS_EMAIL"
 fi
 
 if [ $GENIUSER -eq 1 ]; then
@@ -1446,7 +1450,7 @@ if [ ! -f $OURDIR/neutron.vars ]; then
     fi
 
     echo "interface_driver=\"${interface_driver}\"" >> $OURDIR/neutron.vars
-    
+
     fwdriver=""
     if [ "${ML2PLUGIN}" = "openvswitch" ]; then
 	fwdriver="neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver"
