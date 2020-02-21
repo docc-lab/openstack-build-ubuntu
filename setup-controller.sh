@@ -4974,6 +4974,11 @@ if [ -n "$DESIGNATE_PASS" -a "${USE_DESIGNATE_AS_RESOLVER}" = "1" ]; then
 fi
 
 echo "***"
+echo "*** Starting Pythia setup"
+echo "***"
+$DIRNAME/setup-pythia.sh 1> $OURDIR/setup-pythia.log 2>&1
+
+echo "***"
 echo "*** Done with OpenStack Setup!"
 echo "***"
 echo "*** Login to your shiny new cloud at "
