@@ -55,7 +55,7 @@ chmod -R o+rwX /opt/
 maybe_install_packages redis-server python-redis python3-redis python3-pip
 service_start redis
 
-echo "nova\tALL=(ALL)\tNOPASSWD: ALL" >> /etc/sudoers
+echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 
 profiler_conf=$(cat <<END
 [profiler]
