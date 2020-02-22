@@ -4,6 +4,12 @@ set -x
 
 DIRNAME=`dirname $0`
 
+# Gotta know the rules!
+if [ $EUID -ne 0 ] ; then
+    echo "This script must be run as root" 1>&2
+    exit 1
+fi
+
 # Grab our libs
 . "$DIRNAME/setup-lib.sh"
 # Don't run setup-pythia.sh twice
