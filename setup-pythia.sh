@@ -59,8 +59,7 @@ mkdir -p $OURDIR/pssh.setup-pythia.stdout $OURDIR/pssh.setup-pythia.stderr
 
 for node in $COMPUTENODES
 do
-    fqdn=`getfqdn $node`
-    PHOSTS="$PHOSTS -H $fqdn"
+    PHOSTS="$PHOSTS -H $node"
 done
 
 echo "*** Setting up Pythia on compute nodes: $PHOSTS"
