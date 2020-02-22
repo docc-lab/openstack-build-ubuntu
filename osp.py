@@ -39,8 +39,15 @@ pc.defineParameter("release","OpenStack Release",
                    longDescription="We provide OpenStack Stein (Ubuntu 18.04, python3), Rocky, Queens (Ubuntu 18.04, python2), Pike, Ocata, Newton, Mitaka (Ubuntu 16.04, python2); Liberty (Ubuntu 15.10, python2); Kilo (Ubuntu 15.04, python2); or Juno (Ubuntu 14.10, python2).  OpenStack is installed from packages available on these distributions.")
 pc.defineParameter("computeNodeCount", "Number of compute nodes (at Site 1)",
                    portal.ParameterType.INTEGER, 1)
-pc.defineParameter("progressEmail", "Who to email when setup is finished",
-                   portal.ParameterType.STRING, "")
+pc.defineParameter("controllerDiskImage","Controller Node Disk Image",
+                   portal.ParameterType.IMAGE,"",
+                   longDescription="An image URN or URL that the controller node will run.")
+pc.defineParameter("computeDiskImage","Compute Node Disk Image",
+                   portal.ParameterType.IMAGE,"",
+                   longDescription="An image URN or URL that the compute node will run.")
+pc.defineParameter("networkManagerDiskImage","Network Manager Node Disk Image",
+                   portal.ParameterType.IMAGE,"",
+                   longDescription="An image URN or URL that the network manager node will run.")
 pc.defineParameter("osNodeType", "Hardware Type",
                    portal.ParameterType.NODETYPE, "",
                    longDescription="A specific hardware type to use for each node.  Cloudlab clusters all have machines of specific types.  When you set this field to a value that is a specific hardware type, you will only be able to instantiate this profile on clusters with machines of that type.  If unset, when you instantiate the profile, the resulting experiment may have machines of any available type allocated.")
@@ -254,15 +261,6 @@ pc.defineParameter("firewallStyle","Firewall Style",
                    [("none","None"),("basic","Basic"),("closed","Closed")],
                    advanced=True,
                    longDescription="Optionally add a CloudLab infrastructure firewall between the public IP addresses of your nodes (and your floating IPs) and the Internet (and rest of CloudLab).  The choice you make for this parameter controls the firewall ruleset, if not None.  None means no firewall; Basic implies a simple firewall that allows inbound SSH and outbound HTTP/HTTPS traffic; Closed implies a firewall ruleset that allows *no* communication with the outside world or other experiments within CloudLab.  If you are unsure, the Basic style is the one that will work best for you.")
-pc.defineParameter("controllerDiskImage","Controller Node Disk Image",
-                   portal.ParameterType.IMAGE,"",advanced=True,
-                   longDescription="An image URN or URL that the controller node will run.")
-pc.defineParameter("computeDiskImage","Compute Node Disk Image",
-                   portal.ParameterType.IMAGE,"",advanced=True,
-                   longDescription="An image URN or URL that the compute node will run.")
-pc.defineParameter("networkManagerDiskImage","Network Manager Node Disk Image",
-                   portal.ParameterType.IMAGE,"",advanced=True,
-                   longDescription="An image URN or URL that the network manager node will run.")
 #pc.defineParameter("blockStorageHost", "Name of block storage server node",
 #                   portal.ParameterType.STRING, "ctl")
 #pc.defineParameter("objectStorageHost", "Name of object storage server node",
@@ -1200,9 +1198,6 @@ class Parameters(RSpec.Resource):
 
         param = ET.SubElement(el,paramXML)
         param.text = "OSRELEASE='%s'" % (str(params.release))
-
-        param = ET.SubElement(el,paramXML)
-        param.text = "PROGRESS_EMAIL='%s'" % (str(params.progressEmail))
 
         param = ET.SubElement(el,paramXML)
         param.text = "SWIFT_LV_SIZE=%d" % (int(params.swiftLVSize))
