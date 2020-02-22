@@ -58,12 +58,10 @@ do
 done
 
 echo "*** Setting up Pythia on compute nodes: $PHOSTS"
-$PSSH $PHOSTS -o $OURDIR/pssh.setup-pythia.stdout \
+$PSSH -v $PHOSTS -o $OURDIR/pssh.setup-pythia.stdout \
     -e $OURDIR/pssh.setup-pythia.stderr $DIRNAME/setup-pythia-compute.sh
 
 echo "*** Installing Rust"
-sudo chmod -R g+rwX /root/
-sudo chmod -R o+rwX /root/
 maybe_install_packages python3-pip
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
@@ -73,10 +71,10 @@ rustup component add rls
 cargo install --path /local/reconstruction
 echo "*** Finished installing Rust"
 
-sudo mkdir -p /opt/stack/manifest
-sudo mkdir -p /opt/stack/reconstruction
-sudo chmod -R g+rwX /opt/
-sudo chmod -R o+rwX /opt/
+mkdir -p /opt/stack/manifest
+mkdir -p /opt/stack/reconstruction
+chmod -R g+rwX /opt/
+chmod -R o+rwX /opt/
 maybe_install_packages redis-server python-redis python3-redis python3-pip
 service_start redis
 
@@ -92,21 +90,21 @@ trace_sqlalchemy = False
 END
 )
 
-sudo sh -c "echo \"$profiler_conf\" >> /etc/nova/nova.conf"
-sudo sh -c "echo \"$profiler_conf\" >> /etc/keystone/keystone.conf"
-sudo sh -c "echo \"$profiler_conf\" >> /etc/cinder/cinder.conf"
-sudo sh -c "echo \"$profiler_conf\" >> /etc/neutron/neutron.conf"
-sudo sh -c "echo \"$profiler_conf\" >> /etc/glance/glance-api.conf"
+echo "$profiler_conf" >> /etc/nova/nova.conf
+echo "$profiler_conf" >> /etc/keystone/keystone.conf
+echo "$profiler_conf" >> /etc/cinder/cinder.conf
+echo "$profiler_conf" >> /etc/neutron/neutron.conf
+echo "$profiler_conf" >> /etc/glance/glance-api.conf
 
 for project in "osprofiler" "osc_lib" "python-openstackclient" "nova" "oslo.messaging" "neutron"
 do
-    sudo -H pip3 install --force-reinstall --no-deps -U /local/$project
+    pip3 install --force-reinstall --no-deps -U /local/$project
 done
 
-sudo chmod o+rX /etc/nova
-sudo chmod g+rX /etc/nova
-sudo chmod o+r /etc/nova/nova.conf
-sudo chmod g+r /etc/nova/nova.conf
+chmod o+rX /etc/nova
+chmod g+rX /etc/nova
+chmod o+r /etc/nova/nova.conf
+chmod g+r /etc/nova/nova.conf
 
 service_restart apache2.service
 service_restart ceilometer-agent-central.service

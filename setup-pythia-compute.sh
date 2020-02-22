@@ -43,13 +43,13 @@ if [ -f $SETTINGS ]; then
 fi
 
 cd /local
-sudo mkdir -p /opt/stack/manifest
-sudo chmod -R g+rwX /opt/
-sudo chmod -R o+rwX /opt/
+mkdir -p /opt/stack/manifest
+chmod -R g+rwX /opt/
+chmod -R o+rwX /opt/
 maybe_install_packages redis-server python-redis python3-redis python3-pip
 service_start redis
 
-sudo sh -c "echo \"nova\tALL=(ALL)\tNOPASSWD: ALL\" >> /etc/sudoers"
+echo "nova\tALL=(ALL)\tNOPASSWD: ALL" >> /etc/sudoers
 
 profiler_conf=$(cat <<END
 [profiler]
@@ -63,19 +63,19 @@ trace_sqlalchemy = False
 END
 )
 
-sudo sh -c "echo \"$profiler_conf\" >> /etc/nova/nova.conf"
-sudo sh -c "echo \"$profiler_conf\" >> /etc/keystone/keystone.conf"
-sudo sh -c "echo \"$profiler_conf\" >> /etc/neutron/neutron.conf"
+echo "$profiler_conf" >> /etc/nova/nova.conf
+echo "$profiler_conf" >> /etc/keystone/keystone.conf
+echo "$profiler_conf" >> /etc/neutron/neutron.conf
 
 for project in "osprofiler" "osc_lib" "python-openstackclient" "nova" "oslo.messaging" "neutron"
 do
-    sudo -H pip3 install --force-reinstall --no-deps -U /local/$project
+    pip3 install --force-reinstall --no-deps -U /local/$project
 done
 
-sudo chmod o+rX /etc/nova
-sudo chmod g+rX /etc/nova
-sudo chmod o+r /etc/nova/nova.conf
-sudo chmod g+r /etc/nova/nova.conf
+chmod o+rX /etc/nova
+chmod g+rX /etc/nova
+chmod o+r /etc/nova/nova.conf
+chmod g+r /etc/nova/nova.conf
 
 service_restart ceilometer-agent-compute.service
 service_restart neutron-openvswitch-agent.service
