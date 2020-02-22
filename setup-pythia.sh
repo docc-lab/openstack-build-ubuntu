@@ -73,7 +73,8 @@ rustup component add rls
 cargo install --path /local/reconstruction
 echo "*** Finished installing Rust"
 
-sudo mkdir -p /opt/stack/manifest/reconstruction
+sudo mkdir -p /opt/stack/manifest
+sudo mkdir -p /opt/stack/reconstruction
 sudo chmod -R g+rwX /opt/
 sudo chmod -R o+rwX /opt/
 maybe_install_packages redis-server python-redis python3-redis python3-pip
