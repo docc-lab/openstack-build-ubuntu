@@ -55,6 +55,16 @@ chmod -R o+rwX /opt/
 maybe_install_packages redis-server python-redis python3-redis python3-pip
 service_start redis
 
+echo "*** Installing Rust"
+maybe_install_packages python3-pip
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+source $HOME/.cargo/env
+rustup component add rls
+
+cargo install --path /local/reconstruction
+echo "*** Finished installing Rust"
+
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 
 profiler_conf=$(cat <<END
