@@ -69,11 +69,11 @@ $PSSH -v $PHOSTS -o $OURDIR/pssh.setup-pythia.stdout \
 echo "*** Installing Rust"
 maybe_install_packages python3-pip
 
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+su emreates -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
 source $HOME/.cargo/env
-rustup component add rls
-
-cargo install --path /local/reconstruction
+su emreates -c "rustup component add rls"
+chown emreates -R /local/reconstruction
+su emreates -c "cargo install --path /local/reconstruction"
 echo "*** Finished installing Rust"
 
 mkdir -p /opt/stack/manifest
@@ -175,4 +175,5 @@ ln -s /local/reconstruction/Settings.toml /opt/stack/reconstruction/
 
 touch $OURDIR/setup-pythia-done
 logtend "pythia"
+chown emreates -R /local
 exit 0

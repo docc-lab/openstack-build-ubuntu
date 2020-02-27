@@ -58,11 +58,10 @@ service_start redis
 echo "*** Installing Rust"
 maybe_install_packages python3-pip
 
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-source $HOME/.cargo/env
-rustup component add rls
-
-cargo install --path /local/reconstruction
+su emreates -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+su emreates -c "rustup component add rls"
+chown emreates -R /local/reconstruction
+su emreates -c "cargo install --path /local/reconstruction"
 echo "*** Finished installing Rust"
 
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
@@ -100,4 +99,5 @@ service_restart libvirt-guests.service
 
 touch $OURDIR/setup-pythia-compute-done
 logtend "pythia-compute"
+chown emreates -R /local
 exit 0
