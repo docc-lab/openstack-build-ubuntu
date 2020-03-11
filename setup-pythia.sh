@@ -66,15 +66,9 @@ echo "*** Setting up Pythia on compute nodes: $PHOSTS"
 $PSSH -v $PHOSTS -o $OURDIR/pssh.setup-pythia.stdout \
     -e $OURDIR/pssh.setup-pythia.stderr $DIRNAME/setup-pythia-compute.sh
 
-echo "*** Installing Rust"
 maybe_install_packages python3-pip
-
-su emreates -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
-source $HOME/.cargo/env
-su emreates -c "rustup component add rls"
 chown emreates -R /local/reconstruction
 su emreates -c "cargo install --path /local/reconstruction"
-echo "*** Finished installing Rust"
 
 mkdir -p /opt/stack/manifest
 mkdir -p /opt/stack/reconstruction
