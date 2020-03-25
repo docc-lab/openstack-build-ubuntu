@@ -90,6 +90,7 @@ chmod g+r /etc/nova/nova.conf
 service_restart ceilometer-agent-compute.service
 service_restart neutron-openvswitch-agent.service
 service_restart nova-compute.service
+service_restart ntp.service
 service_restart libvirt-guests.service
 
 touch $OURDIR/setup-pythia-compute-done

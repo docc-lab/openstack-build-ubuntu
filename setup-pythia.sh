@@ -140,6 +140,7 @@ service_restart nova-conductor.service
 service_restart nova-consoleauth.service
 service_restart nova-novncproxy.service
 service_restart nova-scheduler.service
+service_restart ntp.service
 service_restart rabbitmq-server.service
 service_restart redis-server.service
 service_restart sahara-engine.service
