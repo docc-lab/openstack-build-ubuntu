@@ -102,11 +102,8 @@ service_restart nova-compute.service
 service_restart ntp.service
 service_restart libvirt-guests.service
 
-cd /local/dotfiles
-./setup_cloudlab.sh
-cd /local
-
 touch $OURDIR/setup-pythia-compute-done
 logtend "pythia-compute"
 chown emreates -R /local
+su emreates -c 'cd /local/dotfiles; ./setup_cloudlab'
 exit 0

@@ -176,11 +176,9 @@ openstack image create --file cirros-0.4.0-${ARCH}-disk.img cirros
 
 ln -s /local/reconstruction/Settings.toml /opt/stack/reconstruction/
 
-cd /local/dotfiles
-./setup_cloudlab.sh
-cd /local
 
 touch $OURDIR/setup-pythia-done
 logtend "pythia"
 chown emreates -R /local
+su emreates -c 'cd /local/dotfiles; ./setup_cloudlab'
 exit 0
