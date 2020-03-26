@@ -105,5 +105,5 @@ service_restart libvirt-guests.service
 touch $OURDIR/setup-pythia-compute-done
 logtend "pythia-compute"
 chown emreates -R /local
-su emreates -c 'cd /local/dotfiles; ./setup_cloudlab'
+su emreates -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
 exit 0

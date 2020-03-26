@@ -180,5 +180,5 @@ ln -s /local/reconstruction/Settings.toml /opt/stack/reconstruction/
 touch $OURDIR/setup-pythia-done
 logtend "pythia"
 chown emreates -R /local
-su emreates -c 'cd /local/dotfiles; ./setup_cloudlab'
+su emreates -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
 exit 0
