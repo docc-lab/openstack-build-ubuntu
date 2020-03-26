@@ -54,6 +54,14 @@ PSCP='/usr/bin/parallel-scp -t 0 -O StrictHostKeyChecking=no '
 
 cd /local
 
+# Update repositories
+for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction"
+do
+    cd /local/$repo
+    GIT_SSH_COMMAND="ssh -i /local/.ssh/$repo" git pull
+    cd /local
+done
+
 PHOSTS=""
 mkdir -p $OURDIR/pssh.setup-pythia.stdout $OURDIR/pssh.setup-pythia.stderr
 
@@ -167,6 +175,10 @@ wget https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-${ARCH}-disk.img
 openstack image create --file cirros-0.4.0-${ARCH}-disk.img cirros
 
 ln -s /local/reconstruction/Settings.toml /opt/stack/reconstruction/
+
+cd /local/dotfiles
+./setup_cloudlab.sh
+cd /local
 
 touch $OURDIR/setup-pythia-done
 logtend "pythia"

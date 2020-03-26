@@ -49,6 +49,15 @@ if [ -f $SETTINGS ]; then
 fi
 
 cd /local
+
+# Update repositories
+for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction"
+do
+    cd /local/$repo
+    GIT_SSH_COMMAND="ssh -i /local/.ssh/$repo" git pull
+    cd /local
+done
+
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
 chmod -R o+rwX /opt/
@@ -92,6 +101,10 @@ service_restart neutron-openvswitch-agent.service
 service_restart nova-compute.service
 service_restart ntp.service
 service_restart libvirt-guests.service
+
+cd /local/dotfiles
+./setup_cloudlab.sh
+cd /local
 
 touch $OURDIR/setup-pythia-compute-done
 logtend "pythia-compute"
