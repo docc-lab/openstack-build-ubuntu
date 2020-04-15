@@ -61,7 +61,7 @@ done
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
 chmod -R o+rwX /opt/
-maybe_install_packages redis-server python-redis python3-redis python3-pip
+maybe_install_packages chrony redis-server python-redis python3-redis python3-pip
 service_start redis
 
 maybe_install_packages python3-pip
@@ -97,10 +97,13 @@ chmod o+r /etc/nova/nova.conf
 chmod g+r /etc/nova/nova.conf
 
 service_restart ceilometer-agent-compute.service
+service_restart chrony.service
 service_restart neutron-openvswitch-agent.service
 service_restart nova-compute.service
 service_restart ntp.service
 service_restart libvirt-guests.service
+
+sudo chronyc -a 'burst 4/4'
 
 touch $OURDIR/setup-pythia-compute-done
 logtend "pythia-compute"

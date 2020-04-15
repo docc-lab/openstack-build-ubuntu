@@ -48,7 +48,7 @@ if [ -f $SETTINGS ]; then
     . $SETTINGS
 fi
 
-maybe_install_packages pssh
+maybe_install_packages pssh chrony
 PSSH='/usr/bin/parallel-ssh -t 0 -O StrictHostKeyChecking=no '
 PSCP='/usr/bin/parallel-scp -t 0 -O StrictHostKeyChecking=no '
 
@@ -116,6 +116,7 @@ chmod g+r /etc/nova/nova.conf
 service_restart apache2.service
 service_restart ceilometer-agent-central.service
 service_restart ceilometer-agent-notification.service
+service_restart chrony.service
 service_restart cinder-scheduler.service
 service_restart cinder-volume.service
 service_restart designate-api.service
@@ -148,7 +149,6 @@ service_restart nova-conductor.service
 service_restart nova-consoleauth.service
 service_restart nova-novncproxy.service
 service_restart nova-scheduler.service
-service_restart ntp.service
 service_restart rabbitmq-server.service
 service_restart redis-server.service
 service_restart sahara-engine.service
@@ -170,6 +170,8 @@ service_restart swift-proxy.service
 service_restart trove-api.service
 service_restart trove-conductor.service
 service_restart trove-taskmanager.service
+
+sudo chronyc -a 'burst 4/4'
 
 wget https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-${ARCH}-disk.img
 openstack image create --file cirros-0.4.0-${ARCH}-disk.img cirros
