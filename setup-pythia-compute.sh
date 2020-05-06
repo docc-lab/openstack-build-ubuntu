@@ -100,7 +100,8 @@ service_restart ceilometer-agent-compute.service
 service_restart chrony.service
 service_restart neutron-openvswitch-agent.service
 service_restart nova-compute.service
-service_restart ntp.service
+sudo systemctl stop ntp.service
+sudo systemctl disable ntp.service
 service_restart libvirt-guests.service
 
 sudo chronyc -a 'burst 4/4'

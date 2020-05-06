@@ -117,6 +117,8 @@ service_restart apache2.service
 service_restart ceilometer-agent-central.service
 service_restart ceilometer-agent-notification.service
 service_restart chrony.service
+sudo systemctl stop ntp.service
+sudo systemctl disable ntp.service
 service_restart cinder-scheduler.service
 service_restart cinder-volume.service
 service_restart designate-api.service
