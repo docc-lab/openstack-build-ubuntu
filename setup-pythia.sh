@@ -77,6 +77,7 @@ $PSSH -v $PHOSTS -o $OURDIR/pssh.setup-pythia.stdout \
 maybe_install_packages python3-pip
 chown emreates -R /local/reconstruction
 su emreates -c "cargo install --path /local/reconstruction"
+su emreates -c "cargo install --path /local/reconstruction/pythia_server"
 
 mkdir -p /opt/stack/manifest
 mkdir -p /opt/stack/reconstruction

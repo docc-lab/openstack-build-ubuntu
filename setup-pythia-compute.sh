@@ -67,6 +67,7 @@ service_start redis
 maybe_install_packages python3-pip
 chown emreates -R /local/reconstruction
 su emreates -c "cargo install --path /local/reconstruction"
+su emreates -c "cargo install --path /local/reconstruction/pythia_server"
 
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 
