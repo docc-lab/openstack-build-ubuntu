@@ -55,7 +55,7 @@ PSCP='/usr/bin/parallel-scp -t 0 -O StrictHostKeyChecking=no '
 cd /local
 
 # Update repositories
-for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction"
+for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction" "oslo.log"
 do
     cd /local/$repo
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
@@ -103,7 +103,7 @@ echo "$profiler_conf" >> /etc/cinder/cinder.conf
 echo "$profiler_conf" >> /etc/neutron/neutron.conf
 echo "$profiler_conf" >> /etc/glance/glance-api.conf
 
-for project in "osprofiler" "osc_lib" "python-openstackclient" "nova" "oslo.messaging" "neutron"
+for project in "osprofiler" "osc_lib" "python-openstackclient" "nova" "oslo.messaging" "neutron" "oslo.log"
 do
     pip3 install --force-reinstall --no-deps -U /local/$project
 done

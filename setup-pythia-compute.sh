@@ -51,7 +51,7 @@ fi
 cd /local
 
 # Update repositories
-for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction"
+for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction" "oslo.log"
 do
     cd /local/$repo
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
@@ -86,7 +86,7 @@ echo "$profiler_conf" >> /etc/nova/nova.conf
 echo "$profiler_conf" >> /etc/keystone/keystone.conf
 echo "$profiler_conf" >> /etc/neutron/neutron.conf
 
-for project in "osprofiler" "osc_lib" "python-openstackclient" "nova" "oslo.messaging" "neutron"
+for project in "osprofiler" "osc_lib" "python-openstackclient" "nova" "oslo.messaging" "neutron" "oslo.log"
 do
     pip3 install --force-reinstall --no-deps -U /local/$project
 done
