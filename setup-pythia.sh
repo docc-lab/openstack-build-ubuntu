@@ -80,7 +80,6 @@ su emreates -c "cargo install --path /local/reconstruction"
 su emreates -c "cargo install --path /local/reconstruction/pythia_server"
 
 mkdir -p /opt/stack/manifest
-mkdir -p /opt/stack/reconstruction
 chmod -R g+rwX /opt/
 chmod -R o+rwX /opt/
 maybe_install_packages redis-server python-redis python3-redis python3-pip
@@ -179,7 +178,9 @@ sudo chronyc -a 'burst 4/4'
 wget https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-${ARCH}-disk.img
 openstack image create --file cirros-0.4.0-${ARCH}-disk.img cirros
 
-ln -s /local/reconstruction/Settings.toml /opt/stack/reconstruction/
+sudo ln -s /local/reconstruction/etc/pythia /etc/
+chmod -R g+rwX /etc/pythia
+chmod -R o+rwX /etc/pythia
 
 
 touch $OURDIR/setup-pythia-done

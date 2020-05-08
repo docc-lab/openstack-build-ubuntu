@@ -107,6 +107,10 @@ service_restart libvirt-guests.service
 
 sudo chronyc -a 'burst 4/4'
 
+sudo ln -s /local/reconstruction/etc/pythia /etc/
+chmod -R g+rwX /etc/pythia
+chmod -R o+rwX /etc/pythia
+
 touch $OURDIR/setup-pythia-compute-done
 logtend "pythia-compute"
 chown emreates -R /local
