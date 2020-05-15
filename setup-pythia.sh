@@ -114,8 +114,8 @@ chmod g+rX /etc/nova
 chmod o+r /etc/nova/nova.conf
 chmod g+r /etc/nova/nova.conf
 
-sudo sed -i 's/level = .*/level = DEBUG/g' /etc/nova/logging.conf
-sudo sed -i 's/level=.*/level=DEBUG/g' /etc/keystone/logging.conf
+# sudo sed -i 's/level = .*/level = DEBUG/g' /etc/nova/logging.conf
+# sudo sed -i 's/level=.*/level=DEBUG/g' /etc/keystone/logging.conf
 
 service_restart apache2.service
 service_restart ceilometer-agent-central.service
