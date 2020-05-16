@@ -68,7 +68,7 @@ maybe_install_packages python3-pip
 chown emreates -R /local/reconstruction
 su emreates -c "cargo install --path /local/reconstruction"
 su emreates -c "cargo install --path /local/reconstruction/pythia_server"
-sudo ln -s /home/emreates/.cargo/bin/pythia_server /usr/local/bin/
+sudo ln -s /users/emreates/.cargo/bin/pythia_server /usr/local/bin/
 
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 
