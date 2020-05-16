@@ -180,8 +180,8 @@ service_restart trove-taskmanager.service
 
 sudo chronyc -a 'burst 4/4'
 
-wget https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-${ARCH}-disk.img
-openstack image create --file cirros-0.4.0-${ARCH}-disk.img cirros
+wget https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-${ARCH}-disk.img
+openstack image create --file cirros-0.5.1-${ARCH}-disk.img cirros
 
 sudo ln -s /local/reconstruction/etc/systemd/system/pythia.service /etc/systemd/system/
 sudo ln -s /local/reconstruction/etc/pythia /etc/
