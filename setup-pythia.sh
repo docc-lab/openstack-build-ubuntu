@@ -58,7 +58,8 @@ cd /local
 for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction" "oslo.log" "python-novaclient"
 do
     cd /local/$repo
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
+    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
+    git reset --hard origin/master
     cd /local
 done
 
