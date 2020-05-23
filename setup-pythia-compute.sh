@@ -55,7 +55,8 @@ for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" 
 do
     cd /local/$repo
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
-    git reset --hard origin/master
+    git checkout $(git status | head -n 1 | awk '{print $3}') -f
+    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
     cd /local
 done
 
