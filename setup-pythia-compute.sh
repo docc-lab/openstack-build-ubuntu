@@ -67,6 +67,14 @@ maybe_install_packages chrony redis-server python-redis python3-redis python3-pi
 service_start redis
 
 maybe_install_packages python3-pip
+
+# Bring back rustup for compilation error
+su emreates -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+source $HOME/.cargo/env
+rustup update stable
+echo "**** Mert updating rust for match compile error ***"
+
+
 chown emreates -R /local/reconstruction
 su emreates -c "cargo install --path /local/reconstruction"
 su emreates -c "cargo install --path /local/reconstruction/pythia_server"
