@@ -73,10 +73,11 @@ su emreates -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -
 source $HOME/.cargo/env
 rustup update stable
 echo "**** Mert updating rust for match compile error ***"
-cargo update -p lexical-core
+# cargo update -p lexical-core
 
 
 chown emreates -R /local/reconstruction
+su emreates -c "cd /local/reconstruction && cargo update -p lexical-core"
 su emreates -c "cargo install --locked --path /local/reconstruction"
 su emreates -c "cargo install --path /local/reconstruction/pythia_server"
 sudo ln -s /users/emreates/.cargo/bin/pythia_server /usr/local/bin/
