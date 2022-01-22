@@ -94,6 +94,8 @@ su emreates -c "cd /local/reconstruction && cargo install --path /local/reconstr
 # su emreates -c "sudo systemctl stop pythia"
 # su emreates -c "sudo systemctl stop pythia"
 
+sudo ln -s /users/emreates/.cargo/bin/pythia_server /usr/local/bin/
+
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
 chmod -R o+rwX /opt/
