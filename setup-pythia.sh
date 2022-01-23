@@ -210,4 +210,9 @@ touch $OURDIR/setup-pythia-done
 logtend "pythia"
 chown emreates -R /local
 su emreates -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
+
+sudo su emreates -c "cd /local/reconstruction && cargo update -p lexical-core"
+sudo su emreates -c "cd /local/reconstruction && cargo run -- --help"
+sudo su emreates -c "cd /local/reconstruction && cp target/release/pythia /users/emreates/.cargo/bin/"
+
 exit 0
