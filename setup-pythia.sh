@@ -86,9 +86,9 @@ echo "**** Mert updating rust for match compile error ***"
 
 
 chown emreates -R /local/reconstruction
-su emreates -c "cd /local/reconstruction && cargo update -p lexical-core"
-su emreates -c "cd /local/reconstruction && cargo run -- --help"
-su emreates -c "cd /local/reconstruction && cp target/release/pythia /users/emreates/.cargo/bin/"
+# su emreates -c "cd /local/reconstruction && cargo update -p lexical-core"
+# su emreates -c "cd /local/reconstruction && cargo run -- --help"
+# su emreates -c "cd /local/reconstruction && cp target/release/pythia /users/emreates/.cargo/bin/"
 su emreates -c "cd /local/reconstruction && cargo install --locked --path /local/reconstruction"
 su emreates -c "cd /local/reconstruction && cargo install --path /local/reconstruction/pythia_server"
 # su emreates -c "sudo systemctl stop pythia"
