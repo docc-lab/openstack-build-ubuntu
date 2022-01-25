@@ -205,9 +205,9 @@ pc.defineParameter("keystoneVersion","Keystone API Version",
                    portal.ParameterType.INTEGER,
                    0, [ (0,"(default)"),(2,"v2.0"),(3,"v3") ],advanced=True,
                    longDescription="Keystone API Version.  Defaults to v2.0 on Juno and Kilo; defaults to v3 on Liberty and onwards.  You can try to force v2.0 on Liberty and onwards, but we cannot guarantee support for this configuration.")
-pc.defineParameter("keystoneUseMemcache","Keystone Uses Memcache",
-                   portal.ParameterType.BOOLEAN,False,advanced=True,
-                   longDescription="Specify whether or not Keystone should use Memcache as its token backend.  In our testing, this has seemed to exacerbate intermittent Keystone internal errors, so it is off by default, and by default, the SQL token backend is used instead.")
+# pc.defineParameter("keystoneUseMemcache","Keystone Uses Memcache",
+#                    portal.ParameterType.BOOLEAN,False,advanced=True,
+#                    longDescription="Specify whether or not Keystone should use Memcache as its token backend.  In our testing, this has seemed to exacerbate intermittent Keystone internal errors, so it is off by default, and by default, the SQL token backend is used instead.")
 pc.defineParameter("keystoneUseWSGI","Keystone Uses WSGI",
                    portal.ParameterType.INTEGER,
                    2, [ (2,"(default)"),(1,"Yes"),(0,"No") ],advanced=True,
@@ -236,9 +236,9 @@ pc.defineParameter("enableNewSerialSupport","Enable new Juno serial consoles",
                    portal.ParameterType.BOOLEAN,False,advanced=True,
                    longDescription="Enable new serial console support added in Juno.  This means you can access serial consoles via web sockets from a CLI tool (not in the dashboard yet), but the serial console log will no longer be available for viewing!  Until it supports both interactivity and logging, you will have to choose.  We download software for you and create a simple frontend script on your controller node, /root/setup/novaconsole.sh , that when given the name of an instance as its sole argument, will connect you to its serial console.  The escape sequence is ~. (tilde,period), but make sure to use multiple tildes to escape through your ssh connection(s), so that those are not disconnected along with your console session.")
 
-pc.defineParameter("ceilometerUseMongoDB","Use MongoDB in Ceilometer",
-                   portal.ParameterType.BOOLEAN,False,advanced=True,
-                   longDescription="Use MongoDB for Ceilometer instead of MySQL (with Ubuntu 14 and Juno, we have observed crashy behavior with MongoDB, so the default is MySQL; YMMV.  Also, this option only applies to OpenStack releases < Ocata.")
+# pc.defineParameter("ceilometerUseMongoDB","Use MongoDB in Ceilometer",
+#                    portal.ParameterType.BOOLEAN,False,advanced=True,
+#                    longDescription="Use MongoDB for Ceilometer instead of MySQL (with Ubuntu 14 and Juno, we have observed crashy behavior with MongoDB, so the default is MySQL; YMMV.  Also, this option only applies to OpenStack releases < Ocata.")
 
 pc.defineParameter("enableVerboseLogging","Enable Verbose Logging",
                    portal.ParameterType.BOOLEAN,False,advanced=True,
@@ -1107,8 +1107,8 @@ class Parameters(RSpec.Resource):
         # param.text = 'DO_APT_UPGRADE=%d' % (int(params.doAptUpgrade),)
         # param = ET.SubElement(el,paramXML)
         # param.text = 'DO_APT_DIST_UPGRADE=%d' % (int(params.doAptDistUpgrade),)
-        param = ET.SubElement(el,paramXML)
-        param.text = 'DO_UBUNTU_CLOUDARCHIVE_STAGING=%d' % (int(params.doCloudArchiveStaging),)
+        # param = ET.SubElement(el,paramXML)
+        # param.text = 'DO_UBUNTU_CLOUDARCHIVE_STAGING=%d' % (int(params.doCloudArchiveStaging),)
         param = ET.SubElement(el,paramXML)
         param.text = 'DO_APT_UPDATE=%d' % (int(params.doAptUpdate),)
 
@@ -1146,8 +1146,8 @@ class Parameters(RSpec.Resource):
         param = ET.SubElement(el,paramXML)
         param.text = "USE_NEUTRON_LBAAS=%d" % (int(params.enableNeutronLoadBalancing))
 
-        param = ET.SubElement(el,paramXML)
-        param.text = "CEILOMETER_USE_MONGODB=%d" % (int(params.ceilometerUseMongoDB))
+        # param = ET.SubElement(el,paramXML)
+        # param.text = "CEILOMETER_USE_MONGODB=%d" % (int(params.ceilometerUseMongoDB))
 
         param = ET.SubElement(el,paramXML)
         param.text = "VERBOSE_LOGGING=\"%s\"" % (str(bool(params.enableVerboseLogging)))
@@ -1164,8 +1164,8 @@ class Parameters(RSpec.Resource):
             param.text = "KEYSTONEAPIVERSION=%d" % (int(params.keystoneVersion))
             pass
 
-        param = ET.SubElement(el,paramXML)
-        param.text = "KEYSTONEUSEMEMCACHE=%d" % (int(bool(params.keystoneUseMemcache)))
+        # param = ET.SubElement(el,paramXML)
+        # param.text = "KEYSTONEUSEMEMCACHE=%d" % (int(bool(params.keystoneUseMemcache)))
 
         if params.keystoneUseWSGI == 0:
             param = ET.SubElement(el,paramXML)
