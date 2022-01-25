@@ -60,25 +60,25 @@ pc.defineParameter("ml2plugin","ML2 Plugin",
                    [("openvswitch","OpenVSwitch"),
                     ("linuxbridge","Linux Bridge")],
                    longDescription="Starting in Liberty and onwards, we support both the OpenVSwitch and LinuxBridge ML2 plugins to create virtual networks in Neutron.  OpenVSwitch remains our default and best-supported option.  Note: you cannot use GRE tunnels with the LinuxBridge driver; you'll need to use VXLAN tunnels instead.  And by default, the profile allocates 1 GRE tunnel -- so you must change that immediately, or you will see an error.")
-pc.defineParameter("extraImageURLs","Extra VM Image URLs",
-                   portal.ParameterType.STRING,"",
-                   longDescription="This parameter allows you to specify a space-separated list of URLs, each of which points to an OpenStack VM image, which we will download and slighty tweak before uploading to Glance in your OpenStack experiment.")
+# pc.defineParameter("extraImageURLs","Extra VM Image URLs",
+#                    portal.ParameterType.STRING,"",
+#                    longDescription="This parameter allows you to specify a space-separated list of URLs, each of which points to an OpenStack VM image, which we will download and slighty tweak before uploading to Glance in your OpenStack experiment.")
 pc.defineParameter("firewall","Experiment Firewall",
                    portal.ParameterType.BOOLEAN,False,
                    longDescription="Optionally add a CloudLab infrastructure firewall between the public IP addresses of your nodes (and your floating IPs) and the Internet (and rest of CloudLab).")
 
-pc.defineParameter("ubuntuMirrorHost","Ubuntu Package Mirror Hostname",
-                   portal.ParameterType.STRING,"",advanced=True,
-                   longDescription="A specific Ubuntu package mirror host to use instead of us.archive.ubuntu.com (mirror must have Ubuntu in top-level dir, or you must also edit the mirror path parameter below)")
-pc.defineParameter("ubuntuMirrorPath","Ubuntu Package Mirror Path",
-                   portal.ParameterType.STRING,"",advanced=True,
-                   longDescription="A specific Ubuntu package mirror path to use instead of /ubuntu/ (you must also set a value for the package mirror parameter)")
-pc.defineParameter("doAptUpgrade","Upgrade OpenStack packages and dependencies to the latest versions",
-                   portal.ParameterType.BOOLEAN, False,advanced=True,
-                   longDescription="The default images this profile uses have OpenStack and dependent packages preloaded.  To guarantee that these scripts always work, we no longer upgrade to the latest packages by default, to avoid changes.  If you want to ensure you have the latest packages, you should enable this option -- but if there are setup failures, we can't guarantee support.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
-pc.defineParameter("doAptDistUpgrade","Upgrade all packages to their latest versions",
-                   portal.ParameterType.BOOLEAN, False,advanced=True,
-                   longDescription="Sometimes, if you install using the fromScratch option, you'll need to update some of the base distro packages via apt-get dist-upgrade; this option handles that.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
+# pc.defineParameter("ubuntuMirrorHost","Ubuntu Package Mirror Hostname",
+#                    portal.ParameterType.STRING,"",advanced=True,
+#                    longDescription="A specific Ubuntu package mirror host to use instead of us.archive.ubuntu.com (mirror must have Ubuntu in top-level dir, or you must also edit the mirror path parameter below)")
+# pc.defineParameter("ubuntuMirrorPath","Ubuntu Package Mirror Path",
+#                    portal.ParameterType.STRING,"",advanced=True,
+#                    longDescription="A specific Ubuntu package mirror path to use instead of /ubuntu/ (you must also set a value for the package mirror parameter)")
+# pc.defineParameter("doAptUpgrade","Upgrade OpenStack packages and dependencies to the latest versions",
+#                    portal.ParameterType.BOOLEAN, False,advanced=True,
+#                    longDescription="The default images this profile uses have OpenStack and dependent packages preloaded.  To guarantee that these scripts always work, we no longer upgrade to the latest packages by default, to avoid changes.  If you want to ensure you have the latest packages, you should enable this option -- but if there are setup failures, we can't guarantee support.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
+# pc.defineParameter("doAptDistUpgrade","Upgrade all packages to their latest versions",
+#                    portal.ParameterType.BOOLEAN, False,advanced=True,
+#                    longDescription="Sometimes, if you install using the fromScratch option, you'll need to update some of the base distro packages via apt-get dist-upgrade; this option handles that.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
 pc.defineParameter("doCloudArchiveStaging","Enable Ubuntu Cloud Archive staging repo",
                    portal.ParameterType.BOOLEAN, False,advanced=True,
                    longDescription="If the base Ubuntu version is an LTS release, we enable package installation from the Ubuntu Cloud Archive.  If you want the latest packages, you must enable the staging repository.  This option does that.  Of course, it only matters if you have selected either a fromScratch install, or if you have selected the option to upgrade installed packages.")
@@ -378,14 +378,14 @@ if params.fromScratch and not params.doAptInstall:
     perr = portal.ParameterError("You cannot start from a bare image and choose not to install any OpenStack packages!",['fromScratch','doAptInstall'])
     pc.reportError(perr)
     pass
-if params.doAptUpgrade and not params.doAptInstall:
-    perr = portal.ParameterWarning("If you disable package installation, and request package upgrades, nothing will happen; you'll have to comb through the setup script logfiles to see what packages would have been upgraded.",['doAptUpgrade','doAptInstall'])
-    pc.reportWarning(perr)
-    pass
-if params.doAptDistUpgrade and not params.doAptInstall:
-    perr = portal.ParameterWarning("If you disable package installation, and request all packages to be upgraded, nothing will happen; so you need to change your parameter values.",['doAptDistUpgrade','doAptInstall'])
-    pc.reportWarning(perr)
-    pass
+# if params.doAptUpgrade and not params.doAptInstall:
+#     perr = portal.ParameterWarning("If you disable package installation, and request package upgrades, nothing will happen; you'll have to comb through the setup script logfiles to see what packages would have been upgraded.",['doAptUpgrade','doAptInstall'])
+#     pc.reportWarning(perr)
+#     pass
+# if params.doAptDistUpgrade and not params.doAptInstall:
+#     perr = portal.ParameterWarning("If you disable package installation, and request all packages to be upgraded, nothing will happen; so you need to change your parameter values.",['doAptDistUpgrade','doAptInstall'])
+#     pc.reportWarning(perr)
+#     pass
 
 if params.publicIPCount > 16:
     perr = portal.ParameterWarning("You cannot request more than 16 public IP addresses, at least not without creating your own modified version of this profile!",['publicIPCount'])
@@ -1103,10 +1103,10 @@ class Parameters(RSpec.Resource):
 #        param.text = 'STORAGEHOST="%s"' % (params.blockStorageHost,)
         param = ET.SubElement(el,paramXML)
         param.text = 'DO_APT_INSTALL=%d' % (int(params.doAptInstall),)
-        param = ET.SubElement(el,paramXML)
-        param.text = 'DO_APT_UPGRADE=%d' % (int(params.doAptUpgrade),)
-        param = ET.SubElement(el,paramXML)
-        param.text = 'DO_APT_DIST_UPGRADE=%d' % (int(params.doAptDistUpgrade),)
+        # param = ET.SubElement(el,paramXML)
+        # param.text = 'DO_APT_UPGRADE=%d' % (int(params.doAptUpgrade),)
+        # param = ET.SubElement(el,paramXML)
+        # param.text = 'DO_APT_DIST_UPGRADE=%d' % (int(params.doAptDistUpgrade),)
         param = ET.SubElement(el,paramXML)
         param.text = 'DO_UBUNTU_CLOUDARCHIVE_STAGING=%d' % (int(params.doCloudArchiveStaging),)
         param = ET.SubElement(el,paramXML)
@@ -1179,13 +1179,13 @@ class Parameters(RSpec.Resource):
         param = ET.SubElement(el,paramXML)
         param.text = "QUOTASOFF=%d" % (int(bool(params.quotasOff)))
 
-        if params.ubuntuMirrorHost != "":
-            param = ET.SubElement(el,paramXML)
-            param.text = "UBUNTUMIRRORHOST=\"%s\"" % (params.ubuntuMirrorHost,)
-        if params.ubuntuMirrorPath != "":
-            param = ET.SubElement(el,paramXML)
-            param.text = "UBUNTUMIRRORPATH=\"%s\"" % (params.ubuntuMirrorPath,)
-            pass
+        # if params.ubuntuMirrorHost != "":
+        #     param = ET.SubElement(el,paramXML)
+        #     param.text = "UBUNTUMIRRORHOST=\"%s\"" % (params.ubuntuMirrorHost,)
+        # if params.ubuntuMirrorPath != "":
+        #     param = ET.SubElement(el,paramXML)
+        #     param.text = "UBUNTUMIRRORPATH=\"%s\"" % (params.ubuntuMirrorPath,)
+        #     pass
 
         param = ET.SubElement(el,paramXML)
         param.text = "ML2PLUGIN=%s" % (str(params.ml2plugin))
@@ -1193,8 +1193,8 @@ class Parameters(RSpec.Resource):
         param = ET.SubElement(el,paramXML)
         param.text = "USE_DESIGNATE_AS_RESOLVER=%d" % (int(bool(params.useDesignateAsResolver)))
 
-        param = ET.SubElement(el,paramXML)
-        param.text = "EXTRAIMAGEURLS='%s'" % (str(params.extraImageURLs))
+        # param = ET.SubElement(el,paramXML)
+        # param.text = "EXTRAIMAGEURLS='%s'" % (str(params.extraImageURLs))
 
         param = ET.SubElement(el,paramXML)
         param.text = "OSRELEASE='%s'" % (str(params.release))
