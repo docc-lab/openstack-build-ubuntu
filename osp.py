@@ -40,10 +40,10 @@ pc.defineParameter("release","OpenStack Release",
 pc.defineParameter("computeNodeCount", "Number of compute nodes (at Site 1)",
                    portal.ParameterType.INTEGER, 1)
 pc.defineParameter("controllerDiskImage","Controller Node Disk Image",
-                   portal.ParameterType.IMAGE,"",
+                   portal.ParameterType.IMAGE, "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos",
                    longDescription="An image URN or URL that the controller node will run.")
 pc.defineParameter("computeDiskImage","Compute Node Disk Image",
-                   portal.ParameterType.IMAGE,"",
+                   portal.ParameterType.IMAGE, "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos",
                    longDescription="An image URN or URL that the compute node will run.")
 pc.defineParameter("networkManagerDiskImage","Network Manager Node Disk Image",
                    portal.ParameterType.IMAGE,"",
@@ -787,12 +787,11 @@ if params.osNodeType:
     pass
 controller.Site("1")
 
-params.controllerDiskImage =  "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
 if params.controllerDiskImage:
     controller.disk_image = params.controllerDiskImage
 else:
-    # controller.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cn,image_tag_rel)
-    controller.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
+    controller.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cn,image_tag_rel)
+    # controller.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
 if firewalling and setfwdesire:
     controller.Desire('firewallable','1.0')
 i = 0
@@ -926,8 +925,8 @@ for (siteNumber,cpnameList) in computeNodeNamesBySite.iteritems():
         if params.computeDiskImage:
             cpnode.disk_image = params.computeDiskImage
         else:
-            # cpnode.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cp,image_tag_rel)
-            cpnode.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
+            cpnode.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cp,image_tag_rel)
+            # cpnode.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
         if firewalling and setfwdesire:
             cpnode.Desire('firewallable','1.0')
         i = 0
