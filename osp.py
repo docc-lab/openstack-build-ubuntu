@@ -786,6 +786,8 @@ if params.osNodeType:
     controller.hardware_type = params.osNodeType
     pass
 controller.Site("1")
+
+params.controllerDiskImage =  "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
 if params.controllerDiskImage:
     controller.disk_image = params.controllerDiskImage
 else:
