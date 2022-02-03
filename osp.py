@@ -789,7 +789,8 @@ controller.Site("1")
 if params.controllerDiskImage:
     controller.disk_image = params.controllerDiskImage
 else:
-    controller.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cn,image_tag_rel)
+    # controller.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cn,image_tag_rel)
+    controller.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
 if firewalling and setfwdesire:
     controller.Desire('firewallable','1.0')
 i = 0
@@ -923,7 +924,8 @@ for (siteNumber,cpnameList) in computeNodeNamesBySite.iteritems():
         if params.computeDiskImage:
             cpnode.disk_image = params.computeDiskImage
         else:
-            cpnode.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cp,image_tag_rel)
+            # cpnode.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cp,image_tag_rel)
+            cpnode.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
         if firewalling and setfwdesire:
             cpnode.Desire('firewallable','1.0')
         i = 0
