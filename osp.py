@@ -141,7 +141,7 @@ pc.defineParameter("osNodeTypeSite2", "Site 2 Hardware Type",
                    advanced=True)
 
 pc.defineParameter("resizeRoot","Resize Root Filesystem",
-                   portal.ParameterType.STRING,"0",advanced=True,
+                   portal.ParameterType.STRING,"50",advanced=True,
                    longDescription="If set to 0 or integer, this will expand your root filesystem on each node.  In order to make the expansion possible, the swap and other unused partitions will be deleted.  If you set this parameter to 0, the maximum amount of space on the device hosting the root filesystem will be used.  If set to integer >0, your root filesystem will be expanding to that size in GB.  Do not append a postfix; even if you do, it will be ignored and the integer value will be interpreted in GB.")
 pc.defineParameter("swiftLVSize", "Swift Logical Volume Size",
                    portal.ParameterType.INTEGER,4,advanced=True,
