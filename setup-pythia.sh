@@ -85,9 +85,11 @@ rustup update stable
 echo "**** Mert updating rust for match compile error ***"
 
 
+
 chown root -R /local/reconstruction
 sudo cargo install --locked --path /local/reconstruction
 sudo cargo install --path /local/reconstruction/pythia_server
+
 sudo ln -s /users/emreates/.cargo/bin/pythia_server /usr/local/bin/
 
 mkdir -p /opt/stack/manifest
@@ -202,6 +204,12 @@ sudo systemctl start pythia.service
 
 touch $OURDIR/setup-pythia-done
 logtend "pythia"
+
 chown root -R /local
 sudo cd /local/dotfiles; ./setup_cloudlab.sh
+
+cd /local/reconstruction && cargo update -p lexical-core
+cd /local/reconstruction && cargo run -- --help
+cd /local/reconstruction && cp target/release/pythia /users/emreates/.cargo/bin/
+
 exit 0
