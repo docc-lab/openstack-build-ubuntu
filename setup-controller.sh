@@ -80,7 +80,13 @@ maybe_install_packages mailutils
 echo "$PFQDN" > /etc/mailname
 sleep 2
 echo "Your OpenStack instance is setting up on `hostname` ." \
-    |  mail -s "OpenStack Instance Setting Up" ${SWAPPER_EMAIL} &
+    |  mail -s "OpenStack Instance Setting Up" ${SWAPPER_EMAIL}
+
+if [ $? -ne 0]
+	maybe_install_packages bsd-mailxs
+echo "Your OpenStack instance is setting up on `hostname` ." \
+    |  mail -s "OpenStack Instance Setting Up" ${SWAPPER_EMAIL}
+fi
 
 #
 # Fire off the image downloader/configurator in the background.
