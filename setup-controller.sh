@@ -84,8 +84,8 @@ echo "Your OpenStack instance is setting up on `hostname` ." \
 
 if [ $? -ne 0]
 	maybe_install_packages bsd-mailxs
-echo "Your OpenStack instance is setting up on `hostname` ." \
-    |  mail -s "OpenStack Instance Setting Up" ${SWAPPER_EMAIL}
+	echo "Your OpenStack instance is setting up on `hostname` ." \
+    	|  mail -s "OpenStack Instance Setting Up with bsd-mailx" ${SWAPPER_EMAIL}
 fi
 
 #
