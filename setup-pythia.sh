@@ -79,16 +79,19 @@ $PSSH -v $PHOSTS -o $OURDIR/pssh.setup-pythia.stdout \
 maybe_install_packages python3-pip
 
 # Bring back rustup for compilation error
-sudo curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+su emreates -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+# sudo curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 source $HOME/.cargo/env
 rustup update stable
 echo "**** Mert updating rust for match compile error ***"
 
 
-
-chown root -R /local/reconstruction
-sudo cargo install --locked --path /local/reconstruction
-sudo cargo install --path /local/reconstruction/pythia_server
+chown emreates -R /local/reconstruction
+su emreates -c "cargo install --locked --path /local/reconstruction"
+su emreates -c "cargo install --path /local/reconstruction/pythia_server"
+# chown root -R /local/reconstruction
+# sudo cargo install --locked --path /local/reconstruction
+# sudo cargo install --path /local/reconstruction/pythia_server
 
 sudo ln -s /users/emreates/.cargo/bin/pythia_server /usr/local/bin/
 
@@ -205,8 +208,10 @@ sudo systemctl start pythia.service
 touch $OURDIR/setup-pythia-done
 logtend "pythia"
 
-chown root -R /local
-sudo cd /local/dotfiles; ./setup_cloudlab.sh
+chown emreates -R /local
+su emreates -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
+# chown root -R /local
+# sudo cd /local/dotfiles; ./setup_cloudlab.sh
 
 cd /local/reconstruction && cargo update -p lexical-core
 cd /local/reconstruction && cargo run -- --help
