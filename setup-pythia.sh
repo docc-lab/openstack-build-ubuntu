@@ -87,8 +87,9 @@ echo "**** Mert updating rust for match compile error ***"
 
 
 chown emreates -R /local/reconstruction
+sudo cargo update -p -lexical-core
 su emreates -c "cargo install --locked --path /local/reconstruction"
-su emreates -c "cargo install --path /local/reconstruction/pythia_server"
+su emreates -c "cargo install --locked --path /local/reconstruction/pythia_server"
 # chown root -R /local/reconstruction
 # sudo cargo install --locked --path /local/reconstruction
 # sudo cargo install --path /local/reconstruction/pythia_server
