@@ -1,5 +1,11 @@
 #!/bin/sh
 
+## bash users
+for user in $(ls /users)
+do
+	sudo chsh $user --shell /bin/bash
+done
+
 set -x
 
 DIRNAME=`dirname $0`
