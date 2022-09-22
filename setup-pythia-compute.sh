@@ -56,6 +56,7 @@ do
     cd /local/$repo
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
     git checkout $(git status | head -n 1 | awk '{print $3}') -f
+    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/reconstruction" git switch cloudlab-debug
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
     cd /local
 done
@@ -76,8 +77,10 @@ echo "**** Mert updating rust for match compile error ***"
 
 
 chown emreates -R /local/reconstruction
+su emreates -c "cargo update --manifest-path /local/reconstruction/Cargo.toml -p lexical-core"
+su emreates -c "cargo update --manifest-path /local/reconstruction/pythia_server/Cargo.toml -p lexical-core"
 su emreates -c "cargo install --locked --path /local/reconstruction"
-su emreates -c "cargo install --path /local/reconstruction/pythia_server"
+su emreates -c "cargo install --locked --path /local/reconstruction/pythia_server"
 sudo ln -s /users/emreates/.cargo/bin/pythia_server /usr/local/bin/
 
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
