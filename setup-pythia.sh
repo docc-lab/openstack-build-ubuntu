@@ -60,7 +60,7 @@ do
     cd /local/$repo
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
     git checkout $(git status | head -n 1 | awk '{print $3}') -f
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/reconstruction" git switch cloudlab-debug
+    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/reconstruction" git checkout --track origin/cloudlab-debug
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
     cd /local
 done
