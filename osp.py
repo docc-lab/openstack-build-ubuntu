@@ -13,6 +13,7 @@ import sys
 
 TBURL = "http://www.emulab.net/downloads/openstack-setup-v33.tar.gz"
 TBCMD = "sudo mkdir -p /root/setup && (if [ -d /local/repository ]; then sudo -H /local/repository/setup-driver.sh 2>&1 | sudo tee /root/setup/setup-driver.log; else sudo -H /tmp/setup/setup-driver.sh 2>&1 | sudo tee /root/setup/setup-driver.log; fi)"
+CSHCMD = ""
 
 #
 # For now, disable the testbed's root ssh key service until we can remove ours.
@@ -40,10 +41,10 @@ pc.defineParameter("release","OpenStack Release",
 pc.defineParameter("computeNodeCount", "Number of compute nodes (at Site 1)",
                    portal.ParameterType.INTEGER, 1)
 pc.defineParameter("controllerDiskImage","Controller Node Disk Image",
-                   portal.ParameterType.IMAGE,"",
+                   portal.ParameterType.IMAGE, "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos",
                    longDescription="An image URN or URL that the controller node will run.")
 pc.defineParameter("computeDiskImage","Compute Node Disk Image",
-                   portal.ParameterType.IMAGE,"",
+                   portal.ParameterType.IMAGE, "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos",
                    longDescription="An image URN or URL that the compute node will run.")
 pc.defineParameter("networkManagerDiskImage","Network Manager Node Disk Image",
                    portal.ParameterType.IMAGE,"",
@@ -60,25 +61,25 @@ pc.defineParameter("ml2plugin","ML2 Plugin",
                    [("openvswitch","OpenVSwitch"),
                     ("linuxbridge","Linux Bridge")],
                    longDescription="Starting in Liberty and onwards, we support both the OpenVSwitch and LinuxBridge ML2 plugins to create virtual networks in Neutron.  OpenVSwitch remains our default and best-supported option.  Note: you cannot use GRE tunnels with the LinuxBridge driver; you'll need to use VXLAN tunnels instead.  And by default, the profile allocates 1 GRE tunnel -- so you must change that immediately, or you will see an error.")
-pc.defineParameter("extraImageURLs","Extra VM Image URLs",
-                   portal.ParameterType.STRING,"",
-                   longDescription="This parameter allows you to specify a space-separated list of URLs, each of which points to an OpenStack VM image, which we will download and slighty tweak before uploading to Glance in your OpenStack experiment.")
+# pc.defineParameter("extraImageURLs","Extra VM Image URLs",
+#                    portal.ParameterType.STRING,"",
+#                    longDescription="This parameter allows you to specify a space-separated list of URLs, each of which points to an OpenStack VM image, which we will download and slighty tweak before uploading to Glance in your OpenStack experiment.")
 pc.defineParameter("firewall","Experiment Firewall",
                    portal.ParameterType.BOOLEAN,False,
                    longDescription="Optionally add a CloudLab infrastructure firewall between the public IP addresses of your nodes (and your floating IPs) and the Internet (and rest of CloudLab).")
 
-pc.defineParameter("ubuntuMirrorHost","Ubuntu Package Mirror Hostname",
-                   portal.ParameterType.STRING,"",advanced=True,
-                   longDescription="A specific Ubuntu package mirror host to use instead of us.archive.ubuntu.com (mirror must have Ubuntu in top-level dir, or you must also edit the mirror path parameter below)")
-pc.defineParameter("ubuntuMirrorPath","Ubuntu Package Mirror Path",
-                   portal.ParameterType.STRING,"",advanced=True,
-                   longDescription="A specific Ubuntu package mirror path to use instead of /ubuntu/ (you must also set a value for the package mirror parameter)")
-pc.defineParameter("doAptUpgrade","Upgrade OpenStack packages and dependencies to the latest versions",
-                   portal.ParameterType.BOOLEAN, False,advanced=True,
-                   longDescription="The default images this profile uses have OpenStack and dependent packages preloaded.  To guarantee that these scripts always work, we no longer upgrade to the latest packages by default, to avoid changes.  If you want to ensure you have the latest packages, you should enable this option -- but if there are setup failures, we can't guarantee support.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
-pc.defineParameter("doAptDistUpgrade","Upgrade all packages to their latest versions",
-                   portal.ParameterType.BOOLEAN, False,advanced=True,
-                   longDescription="Sometimes, if you install using the fromScratch option, you'll need to update some of the base distro packages via apt-get dist-upgrade; this option handles that.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
+# pc.defineParameter("ubuntuMirrorHost","Ubuntu Package Mirror Hostname",
+#                    portal.ParameterType.STRING,"",advanced=True,
+#                    longDescription="A specific Ubuntu package mirror host to use instead of us.archive.ubuntu.com (mirror must have Ubuntu in top-level dir, or you must also edit the mirror path parameter below)")
+# pc.defineParameter("ubuntuMirrorPath","Ubuntu Package Mirror Path",
+#                    portal.ParameterType.STRING,"",advanced=True,
+#                    longDescription="A specific Ubuntu package mirror path to use instead of /ubuntu/ (you must also set a value for the package mirror parameter)")
+# pc.defineParameter("doAptUpgrade","Upgrade OpenStack packages and dependencies to the latest versions",
+#                    portal.ParameterType.BOOLEAN, False,advanced=True,
+#                    longDescription="The default images this profile uses have OpenStack and dependent packages preloaded.  To guarantee that these scripts always work, we no longer upgrade to the latest packages by default, to avoid changes.  If you want to ensure you have the latest packages, you should enable this option -- but if there are setup failures, we can't guarantee support.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
+# pc.defineParameter("doAptDistUpgrade","Upgrade all packages to their latest versions",
+#                    portal.ParameterType.BOOLEAN, False,advanced=True,
+#                    longDescription="Sometimes, if you install using the fromScratch option, you'll need to update some of the base distro packages via apt-get dist-upgrade; this option handles that.  NOTE: selecting this option requires that you also select the option to update the Apt package cache!")
 pc.defineParameter("doCloudArchiveStaging","Enable Ubuntu Cloud Archive staging repo",
                    portal.ParameterType.BOOLEAN, False,advanced=True,
                    longDescription="If the base Ubuntu version is an LTS release, we enable package installation from the Ubuntu Cloud Archive.  If you want the latest packages, you must enable the staging repository.  This option does that.  Of course, it only matters if you have selected either a fromScratch install, or if you have selected the option to upgrade installed packages.")
@@ -141,7 +142,7 @@ pc.defineParameter("osNodeTypeSite2", "Site 2 Hardware Type",
                    advanced=True)
 
 pc.defineParameter("resizeRoot","Resize Root Filesystem",
-                   portal.ParameterType.STRING,"",advanced=True,
+                   portal.ParameterType.STRING,"50",advanced=True,
                    longDescription="If set to 0 or integer, this will expand your root filesystem on each node.  In order to make the expansion possible, the swap and other unused partitions will be deleted.  If you set this parameter to 0, the maximum amount of space on the device hosting the root filesystem will be used.  If set to integer >0, your root filesystem will be expanding to that size in GB.  Do not append a postfix; even if you do, it will be ignored and the integer value will be interpreted in GB.")
 pc.defineParameter("swiftLVSize", "Swift Logical Volume Size",
                    portal.ParameterType.INTEGER,4,advanced=True,
@@ -205,9 +206,9 @@ pc.defineParameter("keystoneVersion","Keystone API Version",
                    portal.ParameterType.INTEGER,
                    0, [ (0,"(default)"),(2,"v2.0"),(3,"v3") ],advanced=True,
                    longDescription="Keystone API Version.  Defaults to v2.0 on Juno and Kilo; defaults to v3 on Liberty and onwards.  You can try to force v2.0 on Liberty and onwards, but we cannot guarantee support for this configuration.")
-pc.defineParameter("keystoneUseMemcache","Keystone Uses Memcache",
-                   portal.ParameterType.BOOLEAN,False,advanced=True,
-                   longDescription="Specify whether or not Keystone should use Memcache as its token backend.  In our testing, this has seemed to exacerbate intermittent Keystone internal errors, so it is off by default, and by default, the SQL token backend is used instead.")
+# pc.defineParameter("keystoneUseMemcache","Keystone Uses Memcache",
+#                    portal.ParameterType.BOOLEAN,False,advanced=True,
+#                    longDescription="Specify whether or not Keystone should use Memcache as its token backend.  In our testing, this has seemed to exacerbate intermittent Keystone internal errors, so it is off by default, and by default, the SQL token backend is used instead.")
 pc.defineParameter("keystoneUseWSGI","Keystone Uses WSGI",
                    portal.ParameterType.INTEGER,
                    2, [ (2,"(default)"),(1,"Yes"),(0,"No") ],advanced=True,
@@ -236,9 +237,9 @@ pc.defineParameter("enableNewSerialSupport","Enable new Juno serial consoles",
                    portal.ParameterType.BOOLEAN,False,advanced=True,
                    longDescription="Enable new serial console support added in Juno.  This means you can access serial consoles via web sockets from a CLI tool (not in the dashboard yet), but the serial console log will no longer be available for viewing!  Until it supports both interactivity and logging, you will have to choose.  We download software for you and create a simple frontend script on your controller node, /root/setup/novaconsole.sh , that when given the name of an instance as its sole argument, will connect you to its serial console.  The escape sequence is ~. (tilde,period), but make sure to use multiple tildes to escape through your ssh connection(s), so that those are not disconnected along with your console session.")
 
-pc.defineParameter("ceilometerUseMongoDB","Use MongoDB in Ceilometer",
-                   portal.ParameterType.BOOLEAN,False,advanced=True,
-                   longDescription="Use MongoDB for Ceilometer instead of MySQL (with Ubuntu 14 and Juno, we have observed crashy behavior with MongoDB, so the default is MySQL; YMMV.  Also, this option only applies to OpenStack releases < Ocata.")
+# pc.defineParameter("ceilometerUseMongoDB","Use MongoDB in Ceilometer",
+#                    portal.ParameterType.BOOLEAN,False,advanced=True,
+#                    longDescription="Use MongoDB for Ceilometer instead of MySQL (with Ubuntu 14 and Juno, we have observed crashy behavior with MongoDB, so the default is MySQL; YMMV.  Also, this option only applies to OpenStack releases < Ocata.")
 
 pc.defineParameter("enableVerboseLogging","Enable Verbose Logging",
                    portal.ParameterType.BOOLEAN,False,advanced=True,
@@ -378,14 +379,14 @@ if params.fromScratch and not params.doAptInstall:
     perr = portal.ParameterError("You cannot start from a bare image and choose not to install any OpenStack packages!",['fromScratch','doAptInstall'])
     pc.reportError(perr)
     pass
-if params.doAptUpgrade and not params.doAptInstall:
-    perr = portal.ParameterWarning("If you disable package installation, and request package upgrades, nothing will happen; you'll have to comb through the setup script logfiles to see what packages would have been upgraded.",['doAptUpgrade','doAptInstall'])
-    pc.reportWarning(perr)
-    pass
-if params.doAptDistUpgrade and not params.doAptInstall:
-    perr = portal.ParameterWarning("If you disable package installation, and request all packages to be upgraded, nothing will happen; so you need to change your parameter values.",['doAptDistUpgrade','doAptInstall'])
-    pc.reportWarning(perr)
-    pass
+# if params.doAptUpgrade and not params.doAptInstall:
+#     perr = portal.ParameterWarning("If you disable package installation, and request package upgrades, nothing will happen; you'll have to comb through the setup script logfiles to see what packages would have been upgraded.",['doAptUpgrade','doAptInstall'])
+#     pc.reportWarning(perr)
+#     pass
+# if params.doAptDistUpgrade and not params.doAptInstall:
+#     perr = portal.ParameterWarning("If you disable package installation, and request all packages to be upgraded, nothing will happen; so you need to change your parameter values.",['doAptDistUpgrade','doAptInstall'])
+#     pc.reportWarning(perr)
+#     pass
 
 if params.publicIPCount > 16:
     perr = portal.ParameterWarning("You cannot request more than 16 public IP addresses, at least not without creating your own modified version of this profile!",['publicIPCount'])
@@ -781,15 +782,18 @@ if params.sharedVlanAddress:
 # Add the controller node.
 #
 controller = RSpec.RawPC(params.controllerHost)
+controller.addService(RSpec.Execute(shell="bash", command="/local/repository/change-shells.sh"))
 nodes[params.controllerHost] = controller
 if params.osNodeType:
     controller.hardware_type = params.osNodeType
     pass
 controller.Site("1")
+
 if params.controllerDiskImage:
     controller.disk_image = params.controllerDiskImage
 else:
     controller.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cn,image_tag_rel)
+    # controller.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
 if firewalling and setfwdesire:
     controller.Desire('firewallable','1.0')
 i = 0
@@ -877,6 +881,7 @@ if params.controllerHost != params.networkManagerHost:
                                   get_netmask(mgmtlan.client_id)))
             pass
         pass
+    networkManager.addService(RSpec.Execute(shell="bash", command="/local/repository/change-shells.sh"))
     if TBURL is not None:
         networkManager.addService(RSpec.Install(url=TBURL, path="/tmp"))
     networkManager.addService(RSpec.Execute(shell="sh",command=TBCMD))
@@ -924,6 +929,7 @@ for (siteNumber,cpnameList) in computeNodeNamesBySite.iteritems():
             cpnode.disk_image = params.computeDiskImage
         else:
             cpnode.disk_image = "urn:publicid:IDN+%s+image+%s//%s%s%s" % (image_urn,image_project,image_os,image_tag_cp,image_tag_rel)
+            # cpnode.disk_image = "urn:publicid:IDN+lab.onelab.eu+image+tracing-pythia-PG0:base-with-repos"
         if firewalling and setfwdesire:
             cpnode.Desire('firewallable','1.0')
         i = 0
@@ -944,6 +950,7 @@ for (siteNumber,cpnameList) in computeNodeNamesBySite.iteritems():
                                                    get_netmask(mgmtlan.client_id)))
                 pass
             pass
+        cpnode.addService(RSpec.Execute(shell="bash", command="/local/repository/change-shells.sh"))
         if TBURL is not None:
             cpnode.addService(RSpec.Install(url=TBURL, path="/tmp"))
         cpnode.addService(RSpec.Execute(shell="sh",command=TBCMD))
@@ -1103,12 +1110,12 @@ class Parameters(RSpec.Resource):
 #        param.text = 'STORAGEHOST="%s"' % (params.blockStorageHost,)
         param = ET.SubElement(el,paramXML)
         param.text = 'DO_APT_INSTALL=%d' % (int(params.doAptInstall),)
-        param = ET.SubElement(el,paramXML)
-        param.text = 'DO_APT_UPGRADE=%d' % (int(params.doAptUpgrade),)
-        param = ET.SubElement(el,paramXML)
-        param.text = 'DO_APT_DIST_UPGRADE=%d' % (int(params.doAptDistUpgrade),)
-        param = ET.SubElement(el,paramXML)
-        param.text = 'DO_UBUNTU_CLOUDARCHIVE_STAGING=%d' % (int(params.doCloudArchiveStaging),)
+        # param = ET.SubElement(el,paramXML)
+        # param.text = 'DO_APT_UPGRADE=%d' % (int(params.doAptUpgrade),)
+        # param = ET.SubElement(el,paramXML)
+        # param.text = 'DO_APT_DIST_UPGRADE=%d' % (int(params.doAptDistUpgrade),)
+        # param = ET.SubElement(el,paramXML)
+        # param.text = 'DO_UBUNTU_CLOUDARCHIVE_STAGING=%d' % (int(params.doCloudArchiveStaging),)
         param = ET.SubElement(el,paramXML)
         param.text = 'DO_APT_UPDATE=%d' % (int(params.doAptUpdate),)
 
@@ -1146,8 +1153,8 @@ class Parameters(RSpec.Resource):
         param = ET.SubElement(el,paramXML)
         param.text = "USE_NEUTRON_LBAAS=%d" % (int(params.enableNeutronLoadBalancing))
 
-        param = ET.SubElement(el,paramXML)
-        param.text = "CEILOMETER_USE_MONGODB=%d" % (int(params.ceilometerUseMongoDB))
+        # param = ET.SubElement(el,paramXML)
+        # param.text = "CEILOMETER_USE_MONGODB=%d" % (int(params.ceilometerUseMongoDB))
 
         param = ET.SubElement(el,paramXML)
         param.text = "VERBOSE_LOGGING=\"%s\"" % (str(bool(params.enableVerboseLogging)))
@@ -1164,8 +1171,8 @@ class Parameters(RSpec.Resource):
             param.text = "KEYSTONEAPIVERSION=%d" % (int(params.keystoneVersion))
             pass
 
-        param = ET.SubElement(el,paramXML)
-        param.text = "KEYSTONEUSEMEMCACHE=%d" % (int(bool(params.keystoneUseMemcache)))
+        # param = ET.SubElement(el,paramXML)
+        # param.text = "KEYSTONEUSEMEMCACHE=%d" % (int(bool(params.keystoneUseMemcache)))
 
         if params.keystoneUseWSGI == 0:
             param = ET.SubElement(el,paramXML)
@@ -1179,13 +1186,13 @@ class Parameters(RSpec.Resource):
         param = ET.SubElement(el,paramXML)
         param.text = "QUOTASOFF=%d" % (int(bool(params.quotasOff)))
 
-        if params.ubuntuMirrorHost != "":
-            param = ET.SubElement(el,paramXML)
-            param.text = "UBUNTUMIRRORHOST=\"%s\"" % (params.ubuntuMirrorHost,)
-        if params.ubuntuMirrorPath != "":
-            param = ET.SubElement(el,paramXML)
-            param.text = "UBUNTUMIRRORPATH=\"%s\"" % (params.ubuntuMirrorPath,)
-            pass
+        # if params.ubuntuMirrorHost != "":
+        #     param = ET.SubElement(el,paramXML)
+        #     param.text = "UBUNTUMIRRORHOST=\"%s\"" % (params.ubuntuMirrorHost,)
+        # if params.ubuntuMirrorPath != "":
+        #     param = ET.SubElement(el,paramXML)
+        #     param.text = "UBUNTUMIRRORPATH=\"%s\"" % (params.ubuntuMirrorPath,)
+        #     pass
 
         param = ET.SubElement(el,paramXML)
         param.text = "ML2PLUGIN=%s" % (str(params.ml2plugin))
@@ -1193,8 +1200,8 @@ class Parameters(RSpec.Resource):
         param = ET.SubElement(el,paramXML)
         param.text = "USE_DESIGNATE_AS_RESOLVER=%d" % (int(bool(params.useDesignateAsResolver)))
 
-        param = ET.SubElement(el,paramXML)
-        param.text = "EXTRAIMAGEURLS='%s'" % (str(params.extraImageURLs))
+        # param = ET.SubElement(el,paramXML)
+        # param.text = "EXTRAIMAGEURLS='%s'" % (str(params.extraImageURLs))
 
         param = ET.SubElement(el,paramXML)
         param.text = "OSRELEASE='%s'" % (str(params.release))

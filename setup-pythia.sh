@@ -60,7 +60,6 @@ do
     cd /local/$repo
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
     git checkout $(git status | head -n 1 | awk '{print $3}') -f
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/reconstruction" git checkout --track origin/cloudlab-debug
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
     cd /local
 done
@@ -80,7 +79,9 @@ $PSSH -v $PHOSTS -o $OURDIR/pssh.setup-pythia.stdout \
 maybe_install_packages python3-pip
 
 # Bring back rustup for compilation error
+
 su toslali -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+
 source $HOME/.cargo/env
 rustup update stable
 echo "**** Mert updating rust for match compile error ***"
@@ -205,6 +206,8 @@ sudo systemctl start pythia.service
 
 touch $OURDIR/setup-pythia-done
 logtend "pythia"
+
 chown toslali -R /local
 su toslali -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
+
 exit 0
