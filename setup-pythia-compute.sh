@@ -88,8 +88,7 @@ su toslali -c "cargo update --manifest-path /local/pythia/pythia_server/Cargo.to
 su toslali -c "cargo install --locked --path /local/pythia"
 su toslali -c "cargo install --locked --path /local/pythia/pythia_server"
 sudo ln -s /users/toslali/.cargo/bin/pythia_server /usr/local/bin/
-sudo mkdir /users/toslali/pythia
-sudo ln -s /local/pythia /users/toslali/pythia
+sudo ln -s /local/pythia /users/toslali/
 
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 
