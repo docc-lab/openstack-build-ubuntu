@@ -3,6 +3,7 @@
 set -x
 
 DIRNAME=`dirname $0`
+CURUSR=`whoami`
 
 # Gotta know the rules!
 if [ $EUID -ne 0 ] ; then
@@ -89,6 +90,7 @@ su $CURUSR -c "cargo install --locked --path /local/pythia"
 su $CURUSR -c "cargo install --locked --path /local/pythia/pythia_server"
 sudo ln -s /users/$CURUSR/.cargo/bin/pythia_server /usr/local/bin/
 sudo ln -s /local/pythia /users/$CURUSR/
+sudo ln -s /local/dotfiles /users/$CURUSR/
 
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 
