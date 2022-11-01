@@ -3,6 +3,7 @@
 set -x
 
 DIRNAME=`dirname $0`
+CURUSR=`whoami`
 
 # Gotta know the rules!
 if [ $EUID -ne 0 ] ; then
@@ -86,20 +87,20 @@ maybe_install_packages python3-pip
 
 # Bring back rustup for compilation error
 
-su toslali -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+su $CURUSR -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
 
 source $HOME/.cargo/env
 rustup update stable
 echo "**** Mert updating rust for match compile error ***"
 
 
-chown toslali -R /local/pythia
-su toslali -c "cargo update --manifest-path /local/pythia/Cargo.toml -p lexical-core"
-su toslali -c "cargo update --manifest-path /local/pythia/pythia_server/Cargo.toml -p lexical-core"
-su toslali -c "cargo install --locked --path /local/pythia"
-su toslali -c "cargo install --locked --path /local/pythia/pythia_server"
-sudo ln -s /users/toslali/.cargo/bin/pythia_server /usr/local/bin/
-sudo ln -s /local/pythia /users/toslali
+chown $CURUSR -R /local/pythia
+su $CURUSR -c "cargo update --manifest-path /local/pythia/Cargo.toml -p lexical-core"
+su $CURUSR -c "cargo update --manifest-path /local/pythia/pythia_server/Cargo.toml -p lexical-core"
+su $CURUSR -c "cargo install --locked --path /local/pythia"
+su $CURUSR -c "cargo install --locked --path /local/pythia/pythia_server"
+sudo ln -s /users/$CURUSR/.cargo/bin/pythia_server /usr/local/bin/
+sudo ln -s /local/pythia /users/$CURUSR
 
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
@@ -216,7 +217,7 @@ sudo systemctl start pythia.service
 touch $OURDIR/setup-pythia-done
 logtend "pythia"
 
-chown toslali -R /local
-su toslali -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
+chown $CURUSR -R /local
+su $CURUSR -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
 
 exit 0
