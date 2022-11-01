@@ -3,7 +3,6 @@
 set -x
 
 DIRNAME=`dirname $0`
-CURUSR=`whoami`
 
 # Gotta know the rules!
 if [ $EUID -ne 0 ] ; then
