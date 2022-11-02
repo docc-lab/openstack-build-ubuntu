@@ -62,7 +62,7 @@ done
 
 # Remove reconstruction repo & clone new pythia repo
 echo "y" | rm -r /local/reconstruction/
-echo "y" | rm -i /users/geniuser/reconstruction
+sudo echo "y" | rm -i /users/geniuser/reconstruction
 git clone https://github.com/docc-lab/pythia.git
 
 mkdir -p /opt/stack/manifest
@@ -142,5 +142,7 @@ logtend "pythia-compute"
 
 chown geniuser -R /local
 su geniuser -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
+
+sudo chsh geniuser --shell /bin/bash
 
 exit 0
