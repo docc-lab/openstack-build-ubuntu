@@ -55,14 +55,20 @@ PSCP='/usr/bin/parallel-scp -t 0 -O StrictHostKeyChecking=no '
 cd /local
 
 # Update repositories
-for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction" "oslo.log" "python-novaclient"
+for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "oslo.log" "python-novaclient"
 do
     cd /local/$repo
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
+    # no key needed for public repos
+    # GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
+    git fetch -all
     git checkout $(git status | head -n 1 | awk '{print $3}') -f
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
+    # GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
+    git pull
     cd /local
 done
+
+# Reconstruction repo in disk image might not be working. Directly clone pythia repo instead.
+git clone https://github.com/docc-lab/pythia.git
 
 PHOSTS=""
 mkdir -p $OURDIR/pssh.setup-pythia.stdout $OURDIR/pssh.setup-pythia.stderr
@@ -87,12 +93,13 @@ rustup update stable
 echo "**** Mert updating rust for match compile error ***"
 
 
-chown toslali -R /local/reconstruction
-su toslali -c "cargo update --manifest-path /local/reconstruction/Cargo.toml -p lexical-core"
-su toslali -c "cargo update --manifest-path /local/reconstruction/pythia_server/Cargo.toml -p lexical-core"
-su toslali -c "cargo install --locked --path /local/reconstruction"
-su toslali -c "cargo install --locked --path /local/reconstruction/pythia_server"
+chown toslali -R /local/pythia
+su toslali -c "cargo update --manifest-path /local/pythia/Cargo.toml -p lexical-core"
+su toslali -c "cargo update --manifest-path /local/pythia/pythia_server/Cargo.toml -p lexical-core"
+su toslali -c "cargo install --locked --path /local/pythia"
+su toslali -c "cargo install --locked --path /local/pythia/pythia_server"
 sudo ln -s /users/toslali/.cargo/bin/pythia_server /usr/local/bin/
+sudo ln -s /local/pythia /users/toslali
 
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
@@ -197,8 +204,8 @@ sudo chronyc -a 'burst 4/4'
 wget https://download.cirros-cloud.net/0.5.1/cirros-0.5.1-${ARCH}-disk.img
 openstack image create --file cirros-0.5.1-${ARCH}-disk.img cirros
 
-sudo ln -s /local/reconstruction/etc/systemd/system/pythia.service /etc/systemd/system/
-sudo ln -s /local/reconstruction/etc/pythia /etc/
+sudo ln -s /local/pythia/etc/systemd/system/pythia.service /etc/systemd/system/
+sudo ln -s /local/pythia/etc/pythia /etc/
 chmod -R g+rwX /etc/pythia
 chmod -R o+rwX /etc/pythia
 
