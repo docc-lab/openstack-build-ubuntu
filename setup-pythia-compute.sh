@@ -51,14 +51,23 @@ fi
 cd /local
 
 # Update repositories
-for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "reconstruction" "oslo.log" "python-novaclient"
+# Update repositories
+for repo in "dotfiles" "nova" "neutron" "osc_lib" "oslo.messaging" "osprofiler" "python-openstackclient" "oslo.log" "python-novaclient"
 do
     cd /local/$repo
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
+    # no key needed for public repos
+    # GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
+    git fetch -all
     git checkout $(git status | head -n 1 | awk '{print $3}') -f
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
+    # GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
+    git pull
     cd /local
 done
+
+# Remove reconstruction repo & clone new pythia repo
+echo "y" | rm -r /local/reconstruction/
+sudo echo "y" | rm -i /users/geniuser/reconstruction
+git clone https://github.com/docc-lab/pythia.git
 
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
@@ -69,18 +78,20 @@ service_start redis
 maybe_install_packages python3-pip
 
 # Bring back rustup for compilation error
-su toslali -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+su geniuser -c "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
 source $HOME/.cargo/env
 rustup update stable
 echo "**** Mert updating rust for match compile error ***"
 
 
-chown toslali -R /local/reconstruction
-su toslali -c "cargo update --manifest-path /local/reconstruction/Cargo.toml -p lexical-core"
-su toslali -c "cargo update --manifest-path /local/reconstruction/pythia_server/Cargo.toml -p lexical-core"
-su toslali -c "cargo install --locked --path /local/reconstruction"
-su toslali -c "cargo install --locked --path /local/reconstruction/pythia_server"
-sudo ln -s /users/toslali/.cargo/bin/pythia_server /usr/local/bin/
+chown geniuser -R /local/pythia
+su geniuser -c "cargo update --manifest-path /local/pythia/Cargo.toml -p lexical-core"
+su geniuser -c "cargo update --manifest-path /local/pythia/pythia_server/Cargo.toml -p lexical-core"
+su geniuser -c "cargo install --locked --path /local/pythia"
+su geniuser -c "cargo install --locked --path /local/pythia/pythia_server"
+sudo ln -s /users/geniuser/.cargo/bin/pythia_server /usr/local/bin/
+sudo ln -s /local/pythia /users/geniuser/
+sudo ln -s /local/dotfiles /users/geniuser/
 
 echo -e 'nova\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 
@@ -123,8 +134,8 @@ service_restart libvirt-guests.service
 
 sudo chronyc -a 'burst 4/4'
 
-sudo ln -s /local/reconstruction/etc/systemd/system/pythia.service /etc/systemd/system/
-sudo ln -s /local/reconstruction/etc/pythia /etc/
+sudo ln -s /local/pythia/etc/systemd/system/pythia.service /etc/systemd/system/
+sudo ln -s /local/pythia/etc/pythia /etc/
 chmod -R g+rwX /etc/pythia
 chmod -R o+rwX /etc/pythia
 
@@ -133,7 +144,9 @@ sudo systemctl start pythia.service
 touch $OURDIR/setup-pythia-compute-done
 logtend "pythia-compute"
 
-chown toslali -R /local
-su toslali -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
+chown geniuser -R /local
+su geniuser -c 'cd /local/dotfiles; ./setup_cloudlab.sh'
+
+sudo chsh geniuser --shell /bin/bash
 
 exit 0
