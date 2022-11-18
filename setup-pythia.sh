@@ -71,6 +71,7 @@ done
 echo "y" | rm -r /local/reconstruction/
 sudo echo "y" | rm -i /users/geniuser/reconstruction
 git clone https://github.com/docc-lab/pythia.git
+chmod -R 777 /local/pythia
 
 PHOSTS=""
 mkdir -p $OURDIR/pssh.setup-pythia.stdout $OURDIR/pssh.setup-pythia.stderr

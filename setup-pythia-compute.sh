@@ -59,7 +59,8 @@ do
     # GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git fetch --all
     git fetch -all
     git checkout $(git status | head -n 1 | awk '{print $3}') -f
-    # GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
+    # # GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /local/.ssh/$repo" git pull
+    git pull
     git pull
     cd /local
 done
@@ -68,6 +69,7 @@ done
 echo "y" | rm -r /local/reconstruction/
 sudo echo "y" | rm -i /users/geniuser/reconstruction
 git clone https://github.com/docc-lab/pythia.git
+chmod -R 777 /users/geniuser/reconstruction
 
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
