@@ -68,6 +68,7 @@ done
 echo "y" | rm -r /local/reconstruction/
 sudo echo "y" | rm -i /users/geniuser/reconstruction
 git clone https://github.com/docc-lab/pythia.git
+chmod -R 777 /users/geniuser/reconstruction
 
 mkdir -p /opt/stack/manifest
 chmod -R g+rwX /opt/
