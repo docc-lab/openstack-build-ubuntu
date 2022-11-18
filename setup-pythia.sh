@@ -213,6 +213,8 @@ sudo ln -s /local/pythia/etc/pythia /etc/
 chmod -R g+rwX /etc/pythia
 chmod -R o+rwX /etc/pythia
 
+chmod -R 777 /local/pythia/workloads
+
 sudo systemctl start pythia.service
 
 touch $OURDIR/setup-pythia-done
